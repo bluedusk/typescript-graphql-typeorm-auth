@@ -16,7 +16,7 @@ export const Routes = () => {
           render={() => (
             <>
               <Header />
-              <div>
+              <div className="column is-half is-offset-one-quarter">
                 <Route path="/register" component={RegisterView} />
                 <Route path="/account" component={Account} />
                 <Route path="/paid-users" component={PaidUsers} />
