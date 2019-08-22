@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { withRouter } from "react-router";
+import { RouteComponentProps } from "react-router";
 
 const REGISTER = gql`
   mutation Register($email: String!, $password: String!) {
@@ -9,7 +9,7 @@ const REGISTER = gql`
   }
 `;
 
-export const RegisterView = withRouter(({ history }) => {
+export const RegisterView = ({ history }: RouteComponentProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -60,4 +60,4 @@ export const RegisterView = withRouter(({ history }) => {
       </div>
     </form>
   );
-});
+};
