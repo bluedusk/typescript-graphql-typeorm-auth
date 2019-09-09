@@ -55,7 +55,7 @@ export const LoginView = ({ history }: RouteComponentProps) => {
             e.preventDefault();
             const res = await login({ variables: { email, password } });
             console.log(res);
-            history.push("/login");
+            history.push("/me");
           }}
         >
           login

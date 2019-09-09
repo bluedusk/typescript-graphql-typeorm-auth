@@ -5,6 +5,7 @@ import { RegisterView } from "./modules/user/RegisterView";
 import { Account } from "./modules/account/Account";
 import { PaidUsers } from "./modules/account/PaidUsers";
 import { Header } from "./shared/Header";
+import { MeView } from "./modules/user/MeView";
 
 export const Routes = () => {
   return (
@@ -18,6 +19,7 @@ export const Routes = () => {
               <Header />
               <div className="column is-half is-offset-one-quarter">
                 <Route path="/register" component={RegisterView} />
+                <Route path="/me" component={MeView} />
                 <Route path="/account" component={Account} />
                 <Route path="/paid-users" component={PaidUsers} />
                 <Route

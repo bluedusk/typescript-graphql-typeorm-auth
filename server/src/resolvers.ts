@@ -6,6 +6,7 @@ export const resolvers: IResolvers = {
   Query: {
     hello: () => "hi",
     me: (_, __, { req }) => {
+      console.log(req.session.userId);
       if (!req.session.userId) {
         return null;
       }

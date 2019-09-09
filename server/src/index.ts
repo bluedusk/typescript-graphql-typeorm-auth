@@ -22,7 +22,13 @@ const startServer = async () => {
   app.use(
     session({ secret: "some secret", resave: false, saveUninitialized: false })
   );
-  server.applyMiddleware({ app });
+  server.applyMiddleware({
+    app,
+    cors: {
+      origin: "http://localhost:3000",
+      credentials: true
+    }
+  });
 
   app.listen({ port: 4000 }, () =>
     console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
