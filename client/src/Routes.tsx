@@ -4,6 +4,7 @@ import { LoginView } from "./modules/user/LoginView";
 import { RegisterView } from "./modules/user/RegisterView";
 import { Account } from "./modules/account/Account";
 import { PaidUsers } from "./modules/account/PaidUsers";
+import { SubscribeUser } from "./modules/account/SubscribeUser";
 import { Header } from "./shared/Header";
 import { MeView } from "./modules/user/MeView";
 
@@ -22,6 +23,7 @@ export const Routes = () => {
                 <Route path="/me" component={MeView} />
                 <Route path="/account" component={Account} />
                 <Route path="/paid-users" component={PaidUsers} />
+                <Route path="/subscription" component={SubscribeUser} />
                 <Route
                   exact={true}
                   path="/"

@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import "dotenv/config";
 import { createConnection } from "typeorm";
 import express = require("express");
 import session = require("express-session");
@@ -15,7 +16,6 @@ const startServer = async () => {
     context: ({ req }) => ({ req })
   });
   await createConnection();
-
   const app = express();
 
   // express session middleware

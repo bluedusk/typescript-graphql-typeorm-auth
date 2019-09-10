@@ -8,7 +8,7 @@
     "@types/express-session": "^1.15.11",
     "@types/graphql": "^14.0.1",
     "@types/node": "^8.0.29",
-    "@types/stripe": "^6.0.0",
+    "@types/stripe": "^6.32.0",
     "nodemon": "^1.18.4",
     "ts-node": "3.3.0",
     "typescript": "3.3.3333"
@@ -22,7 +22,7 @@
     "graphql": "^14.0.2",
     "pg": "^7.3.0",
     "reflect-metadata": "^0.1.10",
-    "stripe": "^7.8.0",
+    "stripe": "^7.9.0",
     "typeorm": "0.2.18"
   },
   "scripts": {
