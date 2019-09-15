@@ -13,7 +13,11 @@ const startServer = async () => {
     typeDefs,
     resolvers,
     // pass request object to context so that we can use it in resolver
-    context: ({ req }) => ({ req })
+    context: ({ req }) => ({ req }),
+    formatError: err => {
+      console.log(JSON.stringify(err, null, 1));
+      return err;
+    }
   });
   await createConnection();
   const app = express();

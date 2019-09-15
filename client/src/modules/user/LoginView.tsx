@@ -2,21 +2,35 @@ import React, { useState } from "react";
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import { RouteComponentProps } from "react-router";
+import { meQuery } from "../../graphql/queries/me";
+import { userFragment } from "../../graphql/fragments/userFragment";
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
-      id
-      email
+      ...UserInfo
     }
   }
+  ${userFragment}
 `;
 
 export const LoginView = ({ history }: RouteComponentProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [login, { data }] = useMutation(LOGIN);
+  const [login, { client }] = useMutation(LOGIN, {
+    update: (cache, { data }) => {
+      if (!data || !data.login) {
+        return null;
+      }
+      cache.writeQuery({
+        query: meQuery,
+        data: {
+          me: data.login
+        }
+      });
+    }
+  });
 
   return (
     <form className="box">
@@ -53,9 +67,10 @@ export const LoginView = ({ history }: RouteComponentProps) => {
           className="button is-primary"
           onClick={async e => {
             e.preventDefault();
+            // optional reset
+            client && (await client.resetStore());
             const res = await login({ variables: { email, password } });
-            console.log(res);
-            history.push("/me");
+            history.push("/account");
           }}
         >
           login

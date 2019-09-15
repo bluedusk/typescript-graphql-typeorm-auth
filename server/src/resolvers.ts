@@ -38,8 +38,7 @@ export const resolvers: IResolvers = {
 
       return user;
     },
-    createSubscription: async (_, args, { req }) => {
-      console.log(args);
+    createSubscription: async (_, { source, ccLast4 }, { req }) => {
       if (!req.session || !req.session.userId) {
         throw new Error("not authenticated");
       }
@@ -47,13 +46,69 @@ export const resolvers: IResolvers = {
       if (!user) {
         throw new Error();
       }
-      const customer = await stripe.customers.create({
-        email: user.email,
-        source: args.source,
-        plan: process.env.PLAN
-      });
-      user.stripeId = customer.id;
+      let stripeId = user.stripeId;
+      if (stripeId) {
+        const customer = await stripe.customers.create({
+          email: user.email,
+          source: source,
+          plan: process.env.PLAN
+        });
+        stripeId = customer.id;
+      } else {
+        // update user
+        // update customer
+        await stripe.customers.update(stripeId, {
+          source
+        });
+        await stripe.subscriptions.create({
+          customer: stripeId,
+          items: [
+            {
+              plan: process.env.PLAN!
+            }
+          ]
+        });
+      }
+      user.stripeId = stripeId;
       user.type = "paid";
+      user.ccLast4 = ccLast4;
+      await user.save();
+
+      return user;
+    },
+    changeCreditCard: async (_, { source, ccLast4 }, { req }) => {
+      if (!req.session || !req.session.userId) {
+        throw new Error("not authenticated");
+      }
+      const user = await User.findOne(req.session.userId);
+      if (!user || !user.stripeId || user.type !== "paid") {
+        throw new Error();
+      }
+
+      await stripe.customers.update(user.stripeId, { source });
+      user.ccLast4 = ccLast4;
+      await user.save();
+      return user;
+    },
+    cancelSubscription: async (_, __, { req }) => {
+      if (!req.session || !req.session.userId) {
+        throw new Error("not authenticated");
+      }
+      const user = await User.findOne(req.session.userId);
+      if (!user || !user.stripeId || user.type !== "paid") {
+        throw new Error();
+      }
+
+      const stripeCustomer = await stripe.customers.retrieve(user.stripeId);
+      const [subscription] = stripeCustomer.subscriptions.data;
+      if (subscription.id) {
+        await stripe.subscriptions.del(subscription.id);
+      }
+      await stripe.customers.deleteSource(
+        user.stripeId,
+        stripeCustomer.default_source as string
+      );
+      user.type = "free-trial";
       await user.save();
 
       return user;

@@ -6,14 +6,15 @@ import {
   CreateSubscriptionMutation,
   CreateSubscriptionMutationVariables
 } from "./__generated__/CreateSubscriptionMutation";
+import { userFragment } from "../../graphql/fragments/userFragment";
 
 const CREATE_SUBSCRIPTION_MUTATION = gql`
-  mutation CreateSubscriptionMutation($source: String!) {
-    createSubscription(source: $source) {
-      id
-      email
+  mutation CreateSubscriptionMutation($source: String!, $ccLast4: String!) {
+    createSubscription(source: $source, ccLast4: $ccLast4) {
+      ...UserInfo
     }
   }
+  ${userFragment}
 `;
 export const SubscribeUser = () => {
   const [createSubscription, { data, loading }] = useMutation<
@@ -26,11 +27,13 @@ export const SubscribeUser = () => {
         console.log(token);
         const response = await createSubscription({
           variables: {
-            source: token.id
+            source: token.id,
+            ccLast4: token.card.last4
           }
         });
         console.log(response);
       }}
+      amount={100}
       stripeKey={process.env.REACT_APP_STRIPE_PUBLISHABLE!}
     />
   );
